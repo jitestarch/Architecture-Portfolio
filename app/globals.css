@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-sans), "Inter", sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  
+  --color-accent: #2563EB;
+  --color-foreground: #111111;
+  --color-background: #FFFFFF;
+  --color-secondary: #FAFAFA;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    @apply font-sans antialiased selection:bg-accent selection:text-white;
+  }
+}
+
+.text-balance {
+  text-wrap: balance;
+}
