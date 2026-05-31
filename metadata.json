@@ -1,0 +1,6 @@
+{
+  "name": "Architecture Portfolio",
+  "description": "Premium minimal architecture portfolio website built with Next.js and Motion",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
