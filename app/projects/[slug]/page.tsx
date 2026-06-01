@@ -9,129 +9,6 @@ import { getProjectBySlug, projects } from '@/data/projects';
 import { ArrowLeft } from 'lucide-react';
 import Container from '@/components/ui/container';
 
-const GALLERY_IMAGES = [
-  {
-    id: 'img-1',
-    url: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 1200,
-    title: 'Brutalist Courtyard',
-    category: 'Exterior',
-    description: 'Raw concrete panels cast dramatic geometric shadows under direct sunlight.',
-    alt: 'Brutalist concrete courtyard with sharp geometric shadows'
-  },
-  {
-    id: 'img-2',
-    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 533,
-    title: 'Horizon Deck',
-    category: 'Exterior',
-    description: 'A seamless transition from natural stone decking to the vast coastal horizon.',
-    alt: 'Modern house wooden deck looking out to the ocean'
-  },
-  {
-    id: 'img-3',
-    url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 1000,
-    title: 'Helix Void',
-    category: 'Interior',
-    description: 'A monolithic plaster spiral staircase weaving through the vertical core.',
-    alt: 'White spiral staircase looking up'
-  },
-  {
-    id: 'img-4',
-    url: 'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 1100,
-    title: 'Monolithic Hearth',
-    category: 'Interior',
-    description: 'A custom stone-carved kitchen island acting as the home\'s physical anchor.',
-    alt: 'Minimal kitchen with a stone-carved kitchen island'
-  },
-  {
-    id: 'img-5',
-    url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 533,
-    title: 'Crystalline Facade',
-    category: 'Facade',
-    description: 'Steel mullions and specialized glazing reflecting the shifting sky colors.',
-    alt: 'Glass skyscraper facade detail'
-  },
-  {
-    id: 'img-6',
-    url: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 1200,
-    title: 'Tropical Vestibule',
-    category: 'Interior',
-    description: 'Lush internal gardens introducing biophilic freshness into the concrete envelope.',
-    alt: 'Biophilic interior with plants inside a concrete room'
-  },
-  {
-    id: 'img-7',
-    url: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 600,
-    title: 'Infinity Horizon',
-    category: 'Exterior',
-    description: 'An expansive cantilevered pool extending directly into the coastal breeze.',
-    alt: 'Infinity pool overlooking coastal cliff'
-  },
-  {
-    id: 'img-8',
-    url: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 533,
-    title: 'Parametric Vault',
-    category: 'Detail',
-    description: 'Undulating wooden slat ceilings optimized for diffusion of natural acoustic waves.',
-    alt: 'Undulating wood ceiling slats architecture detail'
-  },
-  {
-    id: 'img-9',
-    url: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 1066,
-    title: 'Atrium Lounge',
-    category: 'Interior',
-    description: 'Double-height glazing washing the minimal living space in gentle morning light.',
-    alt: 'Warm minimal double-height living room layout'
-  },
-  {
-    id: 'img-10',
-    url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 800,
-    title: 'Light Study',
-    category: 'Facade',
-    description: 'Staggered shadow patterns cast by architectural screens during midday sun.',
-    alt: 'Building facade with grid shadows'
-  },
-  {
-    id: 'img-11',
-    url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 533,
-    title: 'Academic Salon',
-    category: 'Interior',
-    description: 'Warm timber shelving and structured desks fostering deep creative focus.',
-    alt: 'Modern library workspace with clean wood tables'
-  },
-  {
-    id: 'img-12',
-    url: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80',
-    width: 800,
-    height: 1200,
-    title: 'Symmetric Portal',
-    category: 'Detail',
-    description: 'A sequence of minimal concrete arches defining a clean transition zone.',
-    alt: 'Symmetrical concrete archways'
-  }
-];
-
 export default function ProjectDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = React.use(params);
   const project = getProjectBySlug(slug);
@@ -139,33 +16,64 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
 
   const [activeFilter, setActiveFilter] = React.useState('All');
-  const [selectedImageIndex, setSelectedImageIndex] = React.useState<number | null>(null);
+  const [lightbox, setLightbox] = React.useState<{ type: 'gallery' | 'plan'; index: number } | null>(null);
+
+  // Map dynamic admin-uploaded Cloudinary gallery images
+  const projectImages = React.useMemo(() => {
+    if (!project) return [];
+    return (project.gallery || []).map((img, index) => ({
+      id: `img-${index}`,
+      url: img.url,
+      width: 1200,
+      // Stagger heights dynamically based on index to create a beautiful waterfall Pinterest-style masonry grid
+      height: index % 2 === 0 ? 800 : 1200,
+      title: img.alt || `Detail View ${index + 1}`,
+      category: project.category, // Inherit project category
+      description: img.alt || `Atmospheric detail showcasing the premium finishes of ${project.title}.`,
+      alt: img.alt || `${project.title} detail showcase`
+    }));
+  }, [project]);
 
   const filteredImages = React.useMemo(() => {
-    if (activeFilter === 'All') return GALLERY_IMAGES;
-    return GALLERY_IMAGES.filter(img => img.category === activeFilter);
-  }, [activeFilter]);
+    if (activeFilter === 'All') return projectImages;
+    return projectImages.filter(img => img.category === activeFilter);
+  }, [activeFilter, projectImages]);
+
+  // Dynamically extract categories present in the project gallery
+  const categories = React.useMemo(() => {
+    const set = new Set<string>();
+    projectImages.forEach((img) => {
+      if (img.category) set.add(img.category);
+    });
+    const unique = Array.from(set);
+    if (unique.length <= 1) return []; // Hide tabs if there is only 1 category
+    return ['All', ...unique];
+  }, [projectImages]);
 
   const handlePrevImage = React.useCallback(() => {
-    setSelectedImageIndex((prev) => {
+    setLightbox((prev) => {
       if (prev === null) return null;
-      return prev === 0 ? filteredImages.length - 1 : prev - 1;
+      const listLength = prev.type === 'gallery' ? filteredImages.length : (project?.plans?.length || 0);
+      const newIndex = prev.index === 0 ? listLength - 1 : prev.index - 1;
+      return { type: prev.type, index: newIndex };
     });
-  }, [filteredImages.length]);
+  }, [filteredImages.length, project?.plans]);
 
   const handleNextImage = React.useCallback(() => {
-    setSelectedImageIndex((prev) => {
+    setLightbox((prev) => {
       if (prev === null) return null;
-      return prev === filteredImages.length - 1 ? 0 : prev + 1;
+      const listLength = prev.type === 'gallery' ? filteredImages.length : (project?.plans?.length || 0);
+      const newIndex = prev.index === listLength - 1 ? 0 : prev.index + 1;
+      return { type: prev.type, index: newIndex };
     });
-  }, [filteredImages.length]);
+  }, [filteredImages.length, project?.plans]);
 
   React.useEffect(() => {
-    if (selectedImageIndex === null) return;
+    if (lightbox === null) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setSelectedImageIndex(null);
+        setLightbox(null);
       } else if (e.key === 'ArrowLeft') {
         handlePrevImage();
       } else if (e.key === 'ArrowRight') {
@@ -175,7 +83,31 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedImageIndex, handlePrevImage, handleNextImage]);
+  }, [lightbox, handlePrevImage, handleNextImage]);
+
+  // Compute the active image or plan to display in the lightbox
+  const activeLightboxItem = React.useMemo(() => {
+    if (lightbox === null) return null;
+    if (lightbox.type === 'gallery') {
+      const img = filteredImages[lightbox.index];
+      if (!img) return null;
+      return {
+        url: img.url,
+        title: img.title,
+        category: img.category,
+        description: img.description,
+      };
+    } else {
+      const plan = project?.plans?.[lightbox.index];
+      if (!plan) return null;
+      return {
+        url: plan.url,
+        title: plan.label,
+        category: 'Technical Drawing',
+        description: plan.alt || 'Architectural drawing blueprint details.',
+      };
+    }
+  }, [lightbox, filteredImages, project?.plans]);
 
   if (!project) {
     notFound();
@@ -223,39 +155,45 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
       </div>
 
       {/* Metrics & Overview */}
-      <section className="py-24 container mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          {/* Metrics Sidebar */}
-          <div className="lg:col-span-3 space-y-8">
-            <div>
-              <h4 className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2">Location</h4>
-              <p className="text-sm font-medium">{project.location}</p>
-            </div>
-            <div>
-              <h4 className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2">Year</h4>
-              <p className="text-sm font-medium">{project.year}</p>
-            </div>
-            {project.metrics && Object.entries(project.metrics).map(([key, value]) => (
-              <div key={key}>
-                <h4 className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2">{key}</h4>
-                <p className="text-sm font-medium capitalize">{value}</p>
-              </div>
-            ))}
+      <Container className="py-24 space-y-16 max-w-6xl">
+        {/* Premium museum-style horizontal specification bar */}
+        <div className="flex flex-wrap gap-x-10 md:gap-x-16 gap-y-6 py-8 border-y border-gray-200/60 justify-start items-center bg-[#FAFAFA]/40 px-8">
+          <div className="space-y-1">
+            <h4 className="text-[10px] uppercase tracking-[0.25em] text-gray-400 font-extrabold">Location</h4>
+            <p className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">{project.location}</p>
           </div>
+          <div className="space-y-1">
+            <h4 className="text-[10px] uppercase tracking-[0.25em] text-gray-400 font-extrabold">Year</h4>
+            <p className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">{project.year}</p>
+          </div>
+          {project.metrics && Object.entries(project.metrics).map(([key, value]) => (
+            <div key={key} className="space-y-1">
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-gray-400 font-extrabold capitalize">{key}</h4>
+              <p className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight capitalize">{value}</p>
+            </div>
+          ))}
+        </div>
 
-          {/* Detailed Description */}
-          <div className="lg:col-span-8 lg:col-start-5 space-y-8 text-lg leading-relaxed text-gray-600 font-light">
-            <h2 className="text-3xl font-light text-[#111111] mb-8 tracking-tighter">Design Architecture</h2>
+        {/* Narrative & Narrative Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <div className="lg:col-span-4">
+            <h2 className="text-3xl font-light text-[#111111] tracking-tighter leading-[0.95]">
+              Spatial <br className="hidden lg:block"/> Concept
+            </h2>
+          </div>
+          <div className="lg:col-span-8 space-y-6 text-[15px] leading-relaxed text-gray-600 font-light">
             {project.fullDescription.map((paragraph, idx) => (
-              <p key={idx}>{paragraph}</p>
+              <p key={idx} className="first-of-type:text-gray-900 first-of-type:font-normal first-of-type:text-base leading-relaxed">
+                {paragraph}
+              </p>
             ))}
           </div>
         </div>
-      </section>
+      </Container>
 
       {/* Pinterest-style Gallery */}
-      <section className="pb-32 pt-16 bg-[#FAFAFA] border-t border-gray-100">
-        <div className="container mx-auto px-6 md:px-12">
+      <Container className="pb-32 pt-16 bg-[#FAFAFA] border-t border-gray-100 max-w-7xl">
+        <div className="mx-auto px-6 md:px-12">
           {/* Header */}
           <div className="max-w-xl mb-12">
             <span className="text-[#2563EB] text-[11px] font-bold tracking-widest uppercase block mb-3">
@@ -270,32 +208,34 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex flex-wrap gap-2 mb-10 border-b border-gray-200/80 pb-4">
-            {['All', 'Exterior', 'Interior', 'Facade', 'Detail'].map((filter) => {
-              const isActive = activeFilter === filter;
-              return (
-                <button
-                  key={filter}
-                  onClick={() => {
-                    setActiveFilter(filter);
-                    setSelectedImageIndex(null);
-                  }}
-                  className={`relative px-4 py-2 text-xs font-semibold tracking-wider uppercase transition-colors duration-300 ${
-                    isActive ? 'text-[#2563EB]' : 'text-gray-400 hover:text-[#111111]'
-                  }`}
-                >
-                  {filter}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeFilterUnderline"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#2563EB]"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
+          {categories.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-10 border-b border-gray-200/80 pb-4">
+              {categories.map((filter) => {
+                const isActive = activeFilter === filter;
+                return (
+                  <button
+                    key={filter}
+                    onClick={() => {
+                      setActiveFilter(filter);
+                      setLightbox(null);
+                    }}
+                    className={`relative px-4 py-2 text-xs font-semibold tracking-wider uppercase transition-colors duration-300 ${
+                      isActive ? 'text-[#2563EB]' : 'text-gray-400 hover:text-[#111111]'
+                    }`}
+                  >
+                    {filter}
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeFilterUnderline"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#2563EB]"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           {/* Masonry Grid */}
           <motion.div 
@@ -312,7 +252,7 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.3 }}
                   className="break-inside-avoid group relative overflow-hidden rounded-xl bg-white shadow-sm border border-gray-100 cursor-pointer"
-                  onClick={() => setSelectedImageIndex(index)}
+                  onClick={() => setLightbox({ type: 'gallery', index })}
                 >
                   <div className="relative overflow-hidden w-full bg-gray-100">
                     <Image
@@ -342,21 +282,21 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
             </AnimatePresence>
           </motion.div>
         </div>
-      </section>
+      </Container>
 
       {/* Lightbox / Modal */}
       <AnimatePresence>
-        {selectedImageIndex !== null && (
+        {lightbox !== null && activeLightboxItem !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 md:p-10"
-            onClick={() => setSelectedImageIndex(null)}
+            onClick={() => setLightbox(null)}
           >
             {/* Close button */}
             <button
-              onClick={() => setSelectedImageIndex(null)}
+              onClick={() => setLightbox(null)}
               className="absolute top-6 right-6 z-50 text-white/50 hover:text-white transition-colors duration-200 p-2"
               aria-label="Close Lightbox"
             >
@@ -392,8 +332,8 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
               <div className="relative flex-1 bg-black flex items-center justify-center min-h-[40vh] md:min-h-0">
                 <div className="relative w-full h-full aspect-[4/3] md:aspect-auto md:h-[70vh]">
                   <Image
-                    src={filteredImages[selectedImageIndex].url}
-                    alt={filteredImages[selectedImageIndex].title}
+                    src={activeLightboxItem.url}
+                    alt={activeLightboxItem.title}
                     fill
                     className="object-contain"
                     sizes="(max-width: 1200px) 100vw, 1200px"
@@ -407,20 +347,22 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
                 <div className="space-y-6">
                   <div>
                     <span className="text-[#2563EB] text-[10px] font-bold tracking-widest uppercase block mb-2">
-                      {filteredImages[selectedImageIndex].category}
+                      {activeLightboxItem.category}
                     </span>
                     <h2 className="text-2xl font-light text-white tracking-tight">
-                      {filteredImages[selectedImageIndex].title}
+                      {activeLightboxItem.title}
                     </h2>
                   </div>
                   <p className="text-sm text-gray-400 font-light leading-relaxed">
-                    {filteredImages[selectedImageIndex].description}
+                    {activeLightboxItem.description}
                   </p>
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-white/5 flex justify-between items-center text-[10px] font-bold text-gray-500 tracking-wider uppercase">
-                  <span>Inspiration Series</span>
-                  <span>{selectedImageIndex + 1} / {filteredImages.length}</span>
+                  <span>{lightbox.type === 'gallery' ? 'Inspiration Series' : 'Drawing Details'}</span>
+                  <span>
+                    {lightbox.index + 1} / {lightbox.type === 'gallery' ? filteredImages.length : (project?.plans?.length || 0)}
+                  </span>
                 </div>
               </div>
             </motion.div>
@@ -449,17 +391,21 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
             <h3 className="text-3xl font-light tracking-tighter mb-16 text-center">Technical Drawings</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               {project.plans.map((plan, idx) => (
-                <div key={idx} className="flex flex-col bg-white p-8 border border-gray-100">
-                  <div className="relative aspect-square w-full mb-6">
+                <div
+                  key={idx}
+                  onClick={() => setLightbox({ type: 'plan', index: idx })}
+                  className="flex flex-col bg-white p-8 border border-gray-100 cursor-pointer hover:border-black transition-all duration-300 group hover:shadow-md"
+                >
+                  <div className="relative aspect-square w-full mb-6 overflow-hidden">
                     <Image
                       src={plan.url}
                       alt={plan.alt}
                       fill
-                      className="object-contain"
+                      className="object-contain transition-transform duration-500 group-hover:scale-103"
                       referrerPolicy="no-referrer"
                     />
                   </div>
-                  <p className="text-[10px] font-bold tracking-widest uppercase text-center text-gray-400">
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-center text-gray-400 group-hover:text-black transition-colors">
                     {plan.label}
                   </p>
                 </div>
