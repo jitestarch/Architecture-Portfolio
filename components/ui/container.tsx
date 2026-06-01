@@ -3,7 +3,7 @@ import React from 'react'
 
 function Container({children , className}: {children: React.ReactNode , className?: string}) {
   return (
-    <section className={`mx-auto max-w-5xl px-6  ${className}`}>
+    <section className={`mx-auto  px-6  ${className}`}>
         {children}
     </section>
   )
