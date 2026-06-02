@@ -2,13 +2,21 @@ import * as React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Plus, Trash2, ArrowLeft, ExternalLink, SlidersHorizontal } from 'lucide-react';
-import { projects } from '@/data/projects';
+import { supabase } from '@/lib/supabase';
+import { Project } from '@/types/project';
 import { Button } from '@/components/ui/button';
 import { DeleteProjectButton } from '@/components/admin/DeleteProjectButton';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
+  const { data } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  const dbProjects = (data || []) as Project[];
+
   return (
     <div className="min-h-screen bg-white pt-32 pb-24">
       <div className="container mx-auto px-6 md:px-12 max-w-6xl">
@@ -34,7 +42,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Projects List */}
-        {projects.length === 0 ? (
+        {dbProjects.length === 0 ? (
           <div className="text-center py-20 border border-dashed border-gray-200">
             <p className="text-sm text-gray-500 mb-4 font-light">No projects found in the portfolio database.</p>
             <Button className="bg-[#111111] text-white hover:bg-[#2563EB] rounded-none px-6 text-[10px] uppercase tracking-widest font-bold" asChild>
@@ -44,7 +52,7 @@ export default function AdminDashboard() {
         ) : (
           <div className="border border-gray-200 overflow-hidden bg-white">
             <div className="divide-y divide-gray-100">
-              {projects.map((project) => (
+              {dbProjects.map((project) => (
                 <div key={project.slug} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 hover:bg-gray-50/50 transition-colors gap-6">
                   
                   {/* Left Side: Thumbnail & Title Info */}

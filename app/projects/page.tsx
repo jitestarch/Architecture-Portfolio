@@ -4,16 +4,38 @@ import * as React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence, LayoutGroup } from 'motion/react';
-import { projects, getAllCategories } from '@/data/projects';
-import { ProjectCategory } from '@/types/project';
+import { projects } from '@/data/projects';
+import { supabase } from '@/lib/supabase';
+import { Project, ProjectCategory } from '@/types/project';
 
 export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = React.useState<ProjectCategory | 'All'>('All');
-  const categories = ['All', ...getAllCategories()];
+  const [liveProjects, setLiveProjects] = React.useState<Project[]>(projects);
+
+  React.useEffect(() => {
+    async function loadLiveProjects() {
+      const { data } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false }); // Show newest first
+      if (data && data.length > 0) {
+        setLiveProjects(data as Project[]);
+      }
+    }
+    loadLiveProjects();
+  }, []);
+
+  const categories = React.useMemo(() => {
+    const set = new Set<string>();
+    liveProjects.forEach((p) => {
+      if (p.category) set.add(p.category);
+    });
+    return ['All', ...Array.from(set)];
+  }, [liveProjects]);
 
   const filteredProjects = activeCategory === 'All' 
-    ? projects 
-    : projects.filter(p => p.category === activeCategory);
+    ? liveProjects 
+    : liveProjects.filter(p => p.category === activeCategory);
 
   return (
     <div className="pt-32 pb-24 min-h-screen bg-white">

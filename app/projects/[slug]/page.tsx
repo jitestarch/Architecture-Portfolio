@@ -5,18 +5,34 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { getProjectBySlug, projects } from '@/data/projects';
+import { getProjectBySlug } from '@/data/projects';
+import { supabase } from '@/lib/supabase';
+import { Project } from '@/types/project';
 import { ArrowLeft } from 'lucide-react';
 import Container from '@/components/ui/container';
 
 export default function ProjectDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = React.use(params);
-  const project = getProjectBySlug(slug);
+  const [project, setProject] = React.useState<Project | undefined>(() => getProjectBySlug(slug));
   const { scrollYProgress } = useScroll();
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
 
   const [activeFilter, setActiveFilter] = React.useState('All');
   const [lightbox, setLightbox] = React.useState<{ type: 'gallery' | 'plan'; index: number } | null>(null);
+
+  React.useEffect(() => {
+    async function loadLiveProject() {
+      const { data } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('slug', slug)
+        .maybeSingle();
+      if (data) {
+        setProject(data as Project);
+      }
+    }
+    loadLiveProject();
+  }, [slug]);
 
   // Map dynamic admin-uploaded Cloudinary gallery images
   const projectImages = React.useMemo(() => {

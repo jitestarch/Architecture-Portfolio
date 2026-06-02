@@ -1,76 +1,85 @@
 'use server';
 
-import fs from 'fs';
-import path from 'path';
 import { revalidatePath } from 'next/cache';
+import { supabaseAdmin } from '@/lib/supabase';
 import { Project } from '@/types/project';
 
-const jsonFilePath = path.join(process.cwd(), 'data', 'projects.json');
-
 /**
- * Next.js Server Action to add a new project to the projects.json database
- * and instantly revalidate the Next.js static cache for the site pages.
+ * Next.js Server Action to add a new project to the Supabase database.
+ * Uses the secure admin client to bypass Row-Level Security.
  */
 export async function createProject(projectData: Project) {
   try {
-    // 1. Read the existing projects from the JSON database
-    if (!fs.existsSync(jsonFilePath)) {
-      return { success: false, error: 'Database file not found.' };
+    if (!supabaseAdmin) {
+      return { 
+        success: false, 
+        error: 'Supabase admin client not initialized. Ensure SUPABASE_SERVICE_ROLE_KEY is configured.' 
+      };
     }
-    const fileContents = fs.readFileSync(jsonFilePath, 'utf8');
-    const projects: Project[] = JSON.parse(fileContents);
 
-    // 2. Ensure the slug is unique
-    const slugExists = projects.some((p) => p.slug === projectData.slug);
-    if (slugExists) {
+    // 1. Ensure the slug is unique by querying first
+    const { data: existingProject } = await supabaseAdmin
+      .from('projects')
+      .select('slug')
+      .eq('slug', projectData.slug)
+      .maybeSingle();
+
+    if (existingProject) {
       return { success: false, error: `A project with URL slug "${projectData.slug}" already exists.` };
     }
 
-    // 3. Append the new project
-    projects.push(projectData);
+    // 2. Insert the project data into Supabase
+    const { error: insertError } = await supabaseAdmin
+      .from('projects')
+      .insert([projectData]);
 
-    // 4. Write back to the JSON file
-    fs.writeFileSync(jsonFilePath, JSON.stringify(projects, null, 2), 'utf8');
+    if (insertError) {
+      throw insertError;
+    }
 
-    // 5. Revalidate target pages so the portfolio displays updates instantly
+    // 3. Revalidate site pages cache so the update shows immediately
     revalidatePath('/');
     revalidatePath('/projects');
+    revalidatePath('/admin');
 
     return { success: true };
   } catch (error: any) {
     console.error('Failed to create new project:', error);
-    return { success: false, error: error.message || 'An error occurred while saving the project.' };
+    return { success: false, error: error.message || 'An error occurred while saving the project to the database.' };
   }
 }
 
 /**
- * Next.js Server Action to delete a project by its slug from the JSON database.
+ * Next.js Server Action to delete a project by its slug from the Supabase database.
+ * Uses the secure admin client.
  */
 export async function deleteProject(slug: string) {
   try {
-    if (!fs.existsSync(jsonFilePath)) {
-      return { success: false, error: 'Database file not found.' };
-    }
-    const fileContents = fs.readFileSync(jsonFilePath, 'utf8');
-    const projects: Project[] = JSON.parse(fileContents);
-
-    // Filter out the project to delete
-    const updatedProjects = projects.filter((p) => p.slug !== slug);
-
-    if (projects.length === updatedProjects.length) {
-      return { success: false, error: 'Project not found.' };
+    if (!supabaseAdmin) {
+      return { 
+        success: false, 
+        error: 'Supabase admin client not initialized. Ensure SUPABASE_SERVICE_ROLE_KEY is configured.' 
+      };
     }
 
-    // Write back to the JSON file
-    fs.writeFileSync(jsonFilePath, JSON.stringify(updatedProjects, null, 2), 'utf8');
+    // 1. Delete the record from Supabase
+    const { error: deleteError, count } = await supabaseAdmin
+      .from('projects')
+      .delete()
+      .eq('slug', slug);
 
-    // Revalidate target pages
+    if (deleteError) {
+      throw deleteError;
+    }
+
+    // 2. Revalidate target pages
     revalidatePath('/');
     revalidatePath('/projects');
+    revalidatePath('/admin');
 
     return { success: true };
   } catch (error: any) {
     console.error('Failed to delete project:', error);
-    return { success: false, error: error.message || 'An error occurred while deleting the project.' };
+    return { success: false, error: error.message || 'An error occurred while deleting the project from the database.' };
   }
 }
