@@ -28,3 +28,12 @@ alter table projects enable row level security;
 -- Allow anyone (public) to view your projects
 create policy "Allow public read access" on projects
   for select using (true);
+
+-- 4. Grant Table Privileges
+-- This ensures the admin client using service_role has privileges to perform write operations,
+-- and public users/authenticated users have read access.
+grant all privileges on table projects to service_role;
+grant all privileges on table projects to postgres;
+grant select on table projects to anon, authenticated;
+
+

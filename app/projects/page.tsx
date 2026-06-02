@@ -7,6 +7,7 @@ import { motion, AnimatePresence, LayoutGroup } from 'motion/react';
 import { projects } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
 import { Project, ProjectCategory } from '@/types/project';
+import { getOptimizedImageUrl } from '@/lib/utils';
 
 export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = React.useState<ProjectCategory | 'All'>('All');
@@ -90,7 +91,7 @@ export default function ProjectsPage() {
                   <Link href={`/projects/${project.slug}`} className="flex-1 flex flex-col">
                     <div className="relative aspect-[4/3] mb-6 overflow-hidden bg-gray-100">
                       <Image
-                        src={project.heroImage.url}
+                        src={getOptimizedImageUrl(project.heroImage.url, 600)}
                         alt={project.heroImage.alt}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"

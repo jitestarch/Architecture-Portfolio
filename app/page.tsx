@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 import { Project } from '@/types/project';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { getOptimizedImageUrl } from '@/lib/utils';
 
 export default function Home() {
   const [liveProjects, setLiveProjects] = React.useState<Project[]>(projects);
@@ -177,7 +178,7 @@ export default function Home() {
                 <Link href={`/projects/${project.slug}`}>
                   <div className="relative aspect-[4/5] overflow-hidden bg-gray-200 mb-6">
                     <Image
-                      src={project.heroImage.url}
+                      src={getOptimizedImageUrl(project.heroImage.url, 600)}
                       alt={project.heroImage.alt}
                       fill
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
