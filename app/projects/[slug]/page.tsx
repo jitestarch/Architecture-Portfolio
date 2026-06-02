@@ -10,10 +10,13 @@ import { supabase } from '@/lib/supabase';
 import { Project } from '@/types/project';
 import { ArrowLeft } from 'lucide-react';
 import Container from '@/components/ui/container';
+import { getOptimizedImageUrl } from '@/lib/utils';
 
 export default function ProjectDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = React.use(params);
-  const [project, setProject] = React.useState<Project | undefined>(() => getProjectBySlug(slug));
+  const staticProject = React.useMemo(() => getProjectBySlug(slug), [slug]);
+  const [project, setProject] = React.useState<Project | undefined>(staticProject);
+  const [isLoading, setIsLoading] = React.useState(!staticProject);
   const { scrollYProgress } = useScroll();
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
 
@@ -22,13 +25,19 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
 
   React.useEffect(() => {
     async function loadLiveProject() {
-      const { data } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('slug', slug)
-        .maybeSingle();
-      if (data) {
-        setProject(data as Project);
+      try {
+        const { data } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('slug', slug)
+          .maybeSingle();
+        if (data) {
+          setProject(data as Project);
+        }
+      } catch (error) {
+        console.error('Failed to load project from database:', error);
+      } finally {
+        setIsLoading(false);
       }
     }
     loadLiveProject();
@@ -39,7 +48,7 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
     if (!project) return [];
     return (project.gallery || []).map((img, index) => ({
       id: `img-${index}`,
-      url: img.url,
+      url: getOptimizedImageUrl(img.url, 1000),
       width: 1200,
       // Stagger heights dynamically based on index to create a beautiful waterfall Pinterest-style masonry grid
       height: index % 2 === 0 ? 800 : 1200,
@@ -125,6 +134,17 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
     }
   }, [lightbox, filteredImages, project?.plans]);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="space-y-4 text-center">
+          <div className="w-8 h-8 border-2 border-t-[#2563EB] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs uppercase tracking-[0.25em] text-[#2563EB] font-bold animate-pulse">Loading Project Details...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!project) {
     notFound();
   }
@@ -135,7 +155,7 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
       <div className="relative h-[80vh] w-full overflow-hidden bg-[#111111]">
         <motion.div style={{ y: heroY }} className="absolute inset-0">
           <Image
-            src={project.heroImage.url}
+            src={getOptimizedImageUrl(project.heroImage.url, 1920)}
             alt={project.heroImage.alt}
             fill
             className="object-cover opacity-80"
@@ -414,7 +434,7 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
                 >
                   <div className="relative aspect-square w-full mb-6 overflow-hidden">
                     <Image
-                      src={plan.url}
+                      src={getOptimizedImageUrl(plan.url, 1200)}
                       alt={plan.alt}
                       fill
                       className="object-contain transition-transform duration-500 group-hover:scale-103"

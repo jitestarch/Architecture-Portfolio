@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { Project } from '@/types/project';
 import { Button } from '@/components/ui/button';
 import { DeleteProjectButton } from '@/components/admin/DeleteProjectButton';
+import { getOptimizedImageUrl } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -59,11 +60,10 @@ export default async function AdminDashboard() {
                   <div className="flex items-center gap-6">
                     <div className="relative w-20 aspect-video overflow-hidden border border-gray-100 bg-gray-50 flex-shrink-0">
                       <Image
-                        src={project.heroImage.url}
+                        src={getOptimizedImageUrl(project.heroImage.url, 150)}
                         alt={project.heroImage.alt}
                         fill
                         className="object-cover"
-                        unoptimized
                       />
                     </div>
                     <div>
