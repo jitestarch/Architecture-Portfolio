@@ -49,11 +49,29 @@ export default function Home() {
                   <span className="text-[10px] uppercase tracking-widest text-[#2563EB] font-bold">Architecture Student</span>
                 </div>
                 <h1 className="text-5xl md:text-7xl font-extralight tracking-tighter text-[#111111] leading-tight">
-                  Rachit Dhaka
+                  Jitesh SA
                 </h1>
                 <p className="text-sm md:text-base text-gray-600 font-light max-w-xl leading-relaxed">
                   Student at <span className="font-semibold text-[#111111]">SRM School of Environment Architecture and Design (SEAD)</span>, Ramapuram, Chennai. Exploring the intersection of form, environment, and human spatial interaction.
                 </p>
+              </motion.div>              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="pt-6 border-t border-gray-100 flex flex-wrap gap-x-10 gap-y-4"
+              >
+                <div>
+                  <h4 className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#2563EB] mb-2">Get in Touch</h4>
+                  <a href="mailto:jiteshsa5273@gmail.com" className="text-sm font-light text-gray-600 hover:text-[#2563EB] transition-colors block">
+                    jiteshsa5273@gmail.com
+                  </a>
+                </div>
+                <div>
+                  <h4 className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#2563EB] mb-2">Phone</h4>
+                  <a href="tel:+919087990009" className="text-sm font-light text-gray-600 hover:text-[#2563EB] transition-colors block">
+                    +91 90879 90009
+                  </a>
+                </div>
               </motion.div>
             </div>
 
@@ -81,15 +99,11 @@ export default function Home() {
       </section>
 
       {/* Curriculum Vitae Grid Section */}
-      <section id="curriculum-vitae" className="py-24 bg-gray-50/50 border-y border-gray-100">
+      <section id="curriculum-vitae" className=" bg-gray-50/50 border-y border-gray-100">
         <Container className="max-w-6xl">
           <div className="space-y-16">
             {/* Section Title */}
-            <div>
-              <span className="text-[#2563EB] text-[10px] font-bold tracking-[0.25em] uppercase block mb-3">Academic Foundation</span>
-              <h2 className="text-3xl font-light tracking-tighter text-[#111111]">Curriculum Vitae</h2>
-            </div>
-
+            
             {/* Three-Column Sheet Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               
