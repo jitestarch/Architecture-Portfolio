@@ -5,11 +5,28 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { projects } from '@/data/projects';
+import { supabase } from '@/lib/supabase';
+import { Project } from '@/types/project';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 
 export default function Home() {
-  const featuredProjects = projects.slice(0, 3);
+  const [liveProjects, setLiveProjects] = React.useState<Project[]>(projects);
+
+  React.useEffect(() => {
+    async function loadLiveProjects() {
+      const { data } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false }); // Show newest first
+      if (data && data.length > 0) {
+        setLiveProjects(data as Project[]);
+      }
+    }
+    loadLiveProjects();
+  }, []);
+
+  const featuredProjects = liveProjects.slice(0, 3);
 
   return (
     <div className="flex flex-col w-full">
