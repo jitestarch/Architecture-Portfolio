@@ -7,6 +7,8 @@ import { motion } from 'motion/react';
 import { projects } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
 import { Project } from '@/types/project';
+import { Profile } from '@/types/profile';
+import { fallbackProfile } from '@/data/profile';
 
 import { ArrowRight } from 'lucide-react';
 import { getOptimizedImageUrl } from '@/lib/utils';
@@ -14,6 +16,7 @@ import Container from '@/components/ui/container';
 
 export default function Home() {
   const [liveProjects, setLiveProjects] = React.useState<Project[]>(projects);
+  const [profile, setProfile] = React.useState<Profile>(fallbackProfile);
 
   React.useEffect(() => {
     async function loadLiveProjects() {
@@ -25,7 +28,24 @@ export default function Home() {
         setLiveProjects(data as Project[]);
       }
     }
+
+    async function loadProfile() {
+      try {
+        const { data } = await supabase
+          .from('profile')
+          .select('*')
+          .eq('id', 1)
+          .maybeSingle();
+        if (data) {
+          setProfile(data as Profile);
+        }
+      } catch (err) {
+        console.error('Error loading profile:', err);
+      }
+    }
+
     loadLiveProjects();
+    loadProfile();
   }, []);
 
   const featuredProjects = liveProjects.slice(0, 3);
@@ -49,10 +69,10 @@ export default function Home() {
                   <span className="text-[10px] uppercase tracking-widest text-[#2563EB] font-bold">Architecture Student</span>
                 </div>
                 <h1 className="text-5xl md:text-7xl font-extralight tracking-tighter text-[#111111] leading-tight">
-                  Jitesh SA
+                  {profile.name}
                 </h1>
-                <p className="text-sm md:text-base text-gray-600 font-light max-w-xl leading-relaxed">
-                  Student at <span className="font-semibold text-[#111111]">SRM School of Environment Architecture and Design (SEAD)</span>, Ramapuram, Chennai. Exploring the intersection of form, environment, and human spatial interaction.
+                <p className="text-sm md:text-base text-gray-600 font-light max-w-xl leading-relaxed whitespace-pre-wrap">
+                  {profile.description}
                 </p>
               </motion.div>              <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -122,14 +142,22 @@ export default function Home() {
                 </div>
                 
                 <div className="space-y-6">
-                  <div className="group space-y-2 border-l-2 border-blue-600 pl-4 transition-all duration-300">
-                    <span className="text-[9px] uppercase tracking-widest text-[#2563EB] font-bold block">Externship</span>
-                    <h4 className="text-sm font-semibold text-gray-900 uppercase">Starchitect</h4>
-                    <p className="text-xs text-gray-500 font-medium">Kaladipet, Chennai</p>
-                    <p className="text-xs text-gray-400 font-light leading-relaxed">
-                      Hands-on practice in design development, working drawings, 3D visualization, and site supervision.
-                    </p>
-                  </div>
+                  {profile.experience && profile.experience.length > 0 ? (
+                    profile.experience.map((exp, idx) => (
+                      <div key={idx} className="group space-y-2 border-l-2 border-blue-600 pl-4 transition-all duration-300">
+                        <span className="text-[9px] uppercase tracking-widest text-[#2563EB] font-bold block">{exp.category}</span>
+                        <h4 className="text-sm font-semibold text-gray-900 uppercase">{exp.title}</h4>
+                        {exp.location && <p className="text-xs text-gray-500 font-medium">{exp.location}</p>}
+                        {exp.desc && (
+                          <p className="text-xs text-gray-400 font-light leading-relaxed">
+                            {exp.desc}
+                          </p>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-400 font-light italic">No experience records listed.</p>
+                  )}
                 </div>
               </motion.div>
 
@@ -147,22 +175,17 @@ export default function Home() {
                 </div>
                 
                 <div className="space-y-4">
-                  {[
-                    { category: 'Foundation', title: 'Basic Design', desc: 'Exploration of form, scale, and spatial fundamentals' },
-                    { category: 'Residential', title: 'Villa Design', desc: 'Bespoke housing design and layouts' },
-                    { category: 'Institutional', title: 'Primary & Nursery School Design', desc: 'Educational and child-centric spaces' },
-                    { category: 'Rural Studies', title: 'Rurals', desc: 'Contextual design and community housing' },
-                    { category: 'Commercial', title: 'Eye Hospital & Cultural Centre', desc: 'Healthcare and cultural interaction spaces' },
-                    { category: 'Retail', title: 'Mall Design', desc: 'High-density commercial planning' },
-                    { category: 'Recreation', title: 'Stadium Design', desc: 'Large-span structures and public routing' },
-                    { category: 'Urban Planning', title: 'Porur Lake Urban Design', desc: 'Revitalization and community masterplanning' }
-                  ].map((proj, idx) => (
-                    <div key={idx} className="group space-y-0.5 border-l-2 border-transparent hover:border-blue-600 pl-3 transition-all duration-300">
-                      <span className="text-[8px] uppercase tracking-widest text-[#2563EB] font-bold block">{proj.category}</span>
-                      <p className="text-xs font-semibold text-gray-800 group-hover:text-black transition-colors">{proj.title}</p>
-                      <p className="text-[10px] text-gray-400 font-light leading-tight">{proj.desc}</p>
-                    </div>
-                  ))}
+                  {profile.academic_projects && profile.academic_projects.length > 0 ? (
+                    profile.academic_projects.map((proj, idx) => (
+                      <div key={idx} className="group space-y-0.5 border-l-2 border-transparent hover:border-blue-600 pl-3 transition-all duration-300">
+                        <span className="text-[8px] uppercase tracking-widest text-[#2563EB] font-bold block">{proj.category}</span>
+                        <p className="text-xs font-semibold text-gray-800 group-hover:text-black transition-colors">{proj.title}</p>
+                        {proj.desc && <p className="text-[10px] text-gray-400 font-light leading-tight">{proj.desc}</p>}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-400 font-light italic">No academic projects listed.</p>
+                  )}
                 </div>
               </motion.div>
 
@@ -180,26 +203,19 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  {[
-                    'AUTOCAD',
-                    'SKETCHUP',
-                    'REVIT',
-                    'RHINO',
-                    'ENSCAPE',
-                    'D5 RENDER',
-                    'PHOTOSHOP',
-                    'ILLUSTRATOR',
-                    'INDESIGN',
-                    'PROCREATE'
-                  ].map((software) => (
-                    <div 
-                      key={software}
-                      className="border border-gray-100 bg-gray-50/50 px-4 py-3 hover:bg-white hover:border-[#111111] hover:scale-[1.02] transition-all duration-300 flex flex-col justify-between aspect-video rounded-none shadow-sm"
-                    >
-                      <span className="text-[8px] font-bold tracking-widest text-gray-400 uppercase">Tool</span>
-                      <span className="text-xs font-semibold text-gray-800 tracking-tight uppercase mt-2">{software}</span>
-                    </div>
-                  ))}
+                  {profile.software_suite && profile.software_suite.length > 0 ? (
+                    profile.software_suite.map((software) => (
+                      <div 
+                        key={software}
+                        className="border border-gray-100 bg-gray-50/50 px-4 py-3 hover:bg-white hover:border-[#111111] hover:scale-[1.02] transition-all duration-300 flex flex-col justify-between aspect-video rounded-none shadow-sm"
+                      >
+                        <span className="text-[8px] font-bold tracking-widest text-gray-400 uppercase">Tool</span>
+                        <span className="text-xs font-semibold text-gray-800 tracking-tight uppercase mt-2">{software}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-400 font-light italic col-span-2 text-center py-4">No tools listed.</p>
+                  )}
                 </div>
               </motion.div>
 
@@ -219,17 +235,16 @@ export default function Home() {
                   </div>
 
                   <ul className="space-y-4">
-                    {[
-                      { title: 'SRM Saram Project Expo 2026', subtitle: 'Exhibition entry' },
-                      { title: '68th GSEN', subtitle: 'NASA India association work' },
-                      { title: 'Jaipur Rugs Design', subtitle: 'Product design category' },
-                      { title: 'ETHOS - Stadium Design', subtitle: 'National level submission' }
-                    ].map((comp, idx) => (
-                      <li key={idx} className="group space-y-1 pl-3 border-l border-gray-200 hover:border-blue-600 transition-colors">
-                        <p className="text-sm font-medium text-gray-800 group-hover:text-[#2563EB] transition-colors">{comp.title}</p>
-                        <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">{comp.subtitle}</p>
-                      </li>
-                    ))}
+                    {profile.competitions && profile.competitions.length > 0 ? (
+                      profile.competitions.map((comp, idx) => (
+                        <li key={idx} className="group space-y-1 pl-3 border-l border-gray-200 hover:border-blue-600 transition-colors">
+                          <p className="text-sm font-medium text-gray-800 group-hover:text-[#2563EB] transition-colors">{comp.title}</p>
+                          {comp.subtitle && <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">{comp.subtitle}</p>}
+                        </li>
+                      ))
+                    ) : (
+                      <li className="text-xs text-gray-400 font-light italic">No competitions listed.</li>
+                    )}
                   </ul>
                 </div>
 
@@ -240,17 +255,16 @@ export default function Home() {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
-                    {[
-                      { lang: 'TELUGU', level: 'Native' },
-                      { lang: 'HINDI', level: 'Fluent' },
-                      { lang: 'ENGLISH', level: 'Professional' },
-                      { lang: 'TAMIL', level: 'Basic' }
-                    ].map((item, idx) => (
-                      <div key={idx} className="px-3 py-1.5 border border-gray-200 bg-white hover:border-[#111111] transition-colors flex items-baseline gap-2">
-                        <span className="text-[10px] font-bold text-gray-800 tracking-wider uppercase">{item.lang}</span>
-                        <span className="text-[8px] font-medium text-[#2563EB] uppercase">{item.level}</span>
-                      </div>
-                    ))}
+                    {profile.languages && profile.languages.length > 0 ? (
+                      profile.languages.map((item, idx) => (
+                        <div key={idx} className="px-3 py-1.5 border border-gray-200 bg-white hover:border-[#111111] transition-colors flex items-baseline gap-2">
+                          <span className="text-[10px] font-bold text-gray-800 tracking-wider uppercase">{item.lang}</span>
+                          <span className="text-[8px] font-medium text-[#2563EB] uppercase">{item.level}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-gray-400 font-light italic">No languages listed.</p>
+                    )}
                   </div>
                 </div>
               </motion.div>
