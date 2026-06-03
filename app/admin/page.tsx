@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Plus, Trash2, ArrowLeft, ExternalLink, SlidersHorizontal } from 'lucide-react';
+import { Plus, Trash2, ArrowLeft, ExternalLink, SlidersHorizontal, User } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Project } from '@/types/project';
 import { Button } from '@/components/ui/button';
@@ -35,11 +35,19 @@ export default async function AdminDashboard() {
             </h1>
           </div>
           
-          <Button className="bg-[#111111] text-white hover:bg-[#2563EB] rounded-none px-6 text-[10px] uppercase tracking-widest font-bold shadow-sm transition-all duration-300 py-6" asChild>
-            <Link href="/admin/new" className="flex items-center gap-2">
-              <Plus className="w-4 h-4" /> Add New Project
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-4 items-center">
+            <Button className="border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 rounded-none px-6 text-[10px] uppercase tracking-widest font-bold shadow-sm transition-all duration-300 py-6" asChild>
+              <Link href="/admin/profile" className="flex items-center gap-2">
+                <User className="w-4 h-4 text-[#2563EB]" /> Edit Profile & CV
+              </Link>
+            </Button>
+            
+            <Button className="bg-[#111111] text-white hover:bg-[#2563EB] rounded-none px-6 text-[10px] uppercase tracking-widest font-bold shadow-sm transition-all duration-300 py-6" asChild>
+              <Link href="/admin/new" className="flex items-center gap-2">
+                <Plus className="w-4 h-4" /> Add New Project
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {/* Projects List */}
