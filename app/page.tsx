@@ -7,7 +7,7 @@ import { motion } from 'motion/react';
 import { projects } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
 import { Project } from '@/types/project';
-import { Button } from '@/components/ui/button';
+
 import { ArrowRight } from 'lucide-react';
 import { getOptimizedImageUrl } from '@/lib/utils';
 import Container from '@/components/ui/container';
@@ -35,7 +35,7 @@ export default function Home() {
       {/* Premium Student Profile / Hero Section */}
       <section className="pt-32 pb-10 bg-white">
         <Container className="max-w-6xl">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-12 border-b border-gray-100 pb-16">
+          <div className="flex flex-col md:flex-row md:gap-2 border-b border-gray-100">
             {/* Left Info Column */}
             <div className="flex-1 space-y-6">
               <motion.div
@@ -85,10 +85,10 @@ export default function Home() {
               >
                 {/* Architectural styling frame */}
                 <div className="absolute inset-0 border border-gray-200 translate-x-3 translate-y-3 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-500" />
-                <div className="relative w-full h-full overflow-hidden border border-gray-900 bg-gray-50">
+                <div className="relative rounded-3xl  w-full h-full overflow-hidden border border-gray-900 bg-gray-50">
                   <img
-                    src="https://res.cloudinary.com/dt3ucgv75/image/upload/q_auto/f_auto/v1780346832/portfolio-projects/ls5zjfapw2gyphq0ovrq.png"
-                    alt="Rachit Dhaka DP"
+                    src="https://res.cloudinary.com/dt3ucgv75/image/upload/v1780478052/WhatsApp_Image_2026-06-01_at_6.30.29_PM_tik3zj.jpg"
+                    alt="Jitesh SA DP"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
@@ -99,15 +99,16 @@ export default function Home() {
       </section>
 
       {/* Curriculum Vitae Grid Section */}
-      <section id="curriculum-vitae" className=" bg-gray-50/50 border-y border-gray-100">
+      <section id="curriculum-vitae" className="py-24 bg-white border-y border-gray-100">
         <Container className="max-w-6xl">
           <div className="space-y-16">
             {/* Section Title */}
             
-            {/* Three-Column Sheet Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+
+            {/* Four-Column Sheet Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
               
-              {/* Column 1: Academic Projects */}
+              {/* Column 1: Experience */}
               <motion.div
                 initial={{ opacity: 0, y: 25 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -115,52 +116,24 @@ export default function Home() {
                 transition={{ duration: 0.6 }}
                 className="space-y-8"
               >
-                <div className="border-b border-gray-200 pb-3">
-                  <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-gray-900">Academic Projects</h3>
+                <div className="border-b border-gray-200 pb-3 flex justify-between items-center">
+                  <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-gray-900">Experience</h3>
+                  <span className="text-[10px] text-gray-400 font-mono">01</span>
                 </div>
                 
                 <div className="space-y-6">
-                  {/* Residential */}
-                  <div className="group space-y-1">
-                    <span className="text-[9px] uppercase tracking-widest text-[#2563EB] font-bold">Residential</span>
-                    <p className="text-sm font-medium text-gray-800 group-hover:text-black transition-colors">Residential Design</p>
-                  </div>
-
-                  {/* Institutional */}
-                  <div className="group space-y-1">
-                    <span className="text-[9px] uppercase tracking-widest text-[#2563EB] font-bold">Institutional</span>
-                    <p className="text-sm font-medium text-gray-800 group-hover:text-black transition-colors">Institutional Design</p>
-                    <p className="text-xs text-gray-400 font-light">Nursery & Primary school</p>
-                  </div>
-
-                  {/* Rurals */}
-                  <div className="group space-y-1">
-                    <span className="text-[9px] uppercase tracking-widest text-[#2563EB] font-bold">Rural studies</span>
-                    <p className="text-sm font-medium text-gray-800 group-hover:text-black transition-colors">Rurals - Housing</p>
-                  </div>
-
-                  {/* Commercial */}
-                  <div className="group space-y-1">
-                    <span className="text-[9px] uppercase tracking-widest text-[#2563EB] font-bold">Commercial</span>
-                    <p className="text-sm font-medium text-gray-800 group-hover:text-black transition-colors">Commercial Design</p>
-                    <ul className="text-xs text-gray-400 font-light space-y-1 list-disc pl-4 mt-1">
-                      <li>Eye Hospital</li>
-                      <li>Cultural centre</li>
-                      <li>Mall with Theatre</li>
-                      <li>Stadium</li>
-                    </ul>
-                  </div>
-
-                  {/* Urban */}
-                  <div className="group space-y-1">
-                    <span className="text-[9px] uppercase tracking-widest text-[#2563EB] font-bold">Urban Planning</span>
-                    <p className="text-sm font-medium text-gray-800 group-hover:text-black transition-colors">Urban Design</p>
-                    <p className="text-xs text-gray-400 font-light">Masterplanning & Legal framework</p>
+                  <div className="group space-y-2 border-l-2 border-blue-600 pl-4 transition-all duration-300">
+                    <span className="text-[9px] uppercase tracking-widest text-[#2563EB] font-bold block">Externship</span>
+                    <h4 className="text-sm font-semibold text-gray-900 uppercase">Starchitect</h4>
+                    <p className="text-xs text-gray-500 font-medium">Kaladipet, Chennai</p>
+                    <p className="text-xs text-gray-400 font-light leading-relaxed">
+                      Hands-on practice in design development, working drawings, 3D visualization, and site supervision.
+                    </p>
                   </div>
                 </div>
               </motion.div>
 
-              {/* Column 2: Software Skills */}
+              {/* Column 2: Academic Projects */}
               <motion.div
                 initial={{ opacity: 0, y: 25 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -168,18 +141,52 @@ export default function Home() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="space-y-8"
               >
-                <div className="border-b border-gray-200 pb-3">
+                <div className="border-b border-gray-200 pb-3 flex justify-between items-center">
+                  <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-gray-900">Academic Projects</h3>
+                  <span className="text-[10px] text-gray-400 font-mono">02</span>
+                </div>
+                
+                <div className="space-y-4">
+                  {[
+                    { category: 'Foundation', title: 'Basic Design', desc: 'Exploration of form, scale, and spatial fundamentals' },
+                    { category: 'Residential', title: 'Villa Design', desc: 'Bespoke housing design and layouts' },
+                    { category: 'Institutional', title: 'Primary & Nursery School Design', desc: 'Educational and child-centric spaces' },
+                    { category: 'Rural Studies', title: 'Rurals', desc: 'Contextual design and community housing' },
+                    { category: 'Commercial', title: 'Eye Hospital & Cultural Centre', desc: 'Healthcare and cultural interaction spaces' },
+                    { category: 'Retail', title: 'Mall Design', desc: 'High-density commercial planning' },
+                    { category: 'Recreation', title: 'Stadium Design', desc: 'Large-span structures and public routing' },
+                    { category: 'Urban Planning', title: 'Porur Lake Urban Design', desc: 'Revitalization and community masterplanning' }
+                  ].map((proj, idx) => (
+                    <div key={idx} className="group space-y-0.5 border-l-2 border-transparent hover:border-blue-600 pl-3 transition-all duration-300">
+                      <span className="text-[8px] uppercase tracking-widest text-[#2563EB] font-bold block">{proj.category}</span>
+                      <p className="text-xs font-semibold text-gray-800 group-hover:text-black transition-colors">{proj.title}</p>
+                      <p className="text-[10px] text-gray-400 font-light leading-tight">{proj.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Column 3: Software Skills */}
+              <motion.div
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="space-y-8"
+              >
+                <div className="border-b border-gray-200 pb-3 flex justify-between items-center">
                   <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-gray-900">Software Suite</h3>
+                  <span className="text-[10px] text-gray-400 font-mono">03</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   {[
                     'AUTOCAD',
                     'SKETCHUP',
                     'REVIT',
                     'RHINO',
                     'ENSCAPE',
-                    'D5',
+                    'D5 RENDER',
                     'PHOTOSHOP',
                     'ILLUSTRATOR',
                     'INDESIGN',
@@ -187,7 +194,7 @@ export default function Home() {
                   ].map((software) => (
                     <div 
                       key={software}
-                      className="border border-gray-200/80 bg-white p-3 hover:border-black transition-all duration-300 flex flex-col justify-between aspect-video rounded-none shadow-sm hover:shadow"
+                      className="border border-gray-100 bg-gray-50/50 px-4 py-3 hover:bg-white hover:border-[#111111] hover:scale-[1.02] transition-all duration-300 flex flex-col justify-between aspect-video rounded-none shadow-sm"
                     >
                       <span className="text-[8px] font-bold tracking-widest text-gray-400 uppercase">Tool</span>
                       <span className="text-xs font-semibold text-gray-800 tracking-tight uppercase mt-2">{software}</span>
@@ -196,18 +203,19 @@ export default function Home() {
                 </div>
               </motion.div>
 
-              {/* Column 3: Competitions & Languages */}
+              {/* Column 4: Competitions & Languages */}
               <motion.div
                 initial={{ opacity: 0, y: 25 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
                 className="space-y-12"
               >
                 {/* Competitions */}
                 <div className="space-y-6">
-                  <div className="border-b border-gray-200 pb-3">
+                  <div className="border-b border-gray-200 pb-3 flex justify-between items-center">
                     <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-gray-900">Competitions</h3>
+                    <span className="text-[10px] text-gray-400 font-mono">04</span>
                   </div>
 
                   <ul className="space-y-4">
@@ -217,9 +225,9 @@ export default function Home() {
                       { title: 'Jaipur Rugs Design', subtitle: 'Product design category' },
                       { title: 'ETHOS - Stadium Design', subtitle: 'National level submission' }
                     ].map((comp, idx) => (
-                      <li key={idx} className="group space-y-0.5">
+                      <li key={idx} className="group space-y-1 pl-3 border-l border-gray-200 hover:border-blue-600 transition-colors">
                         <p className="text-sm font-medium text-gray-800 group-hover:text-[#2563EB] transition-colors">{comp.title}</p>
-                        <p className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">{comp.subtitle}</p>
+                        <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">{comp.subtitle}</p>
                       </li>
                     ))}
                   </ul>
@@ -227,7 +235,7 @@ export default function Home() {
 
                 {/* Languages */}
                 <div className="space-y-6">
-                  <div className="border-b border-gray-200 pb-3">
+                  <div className="border-b border-gray-200 pb-3 flex justify-between items-center">
                     <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-gray-900">Languages</h3>
                   </div>
 
@@ -238,9 +246,9 @@ export default function Home() {
                       { lang: 'ENGLISH', level: 'Professional' },
                       { lang: 'TAMIL', level: 'Basic' }
                     ].map((item, idx) => (
-                      <div key={idx} className="px-3 py-1.5 border border-gray-200 bg-white flex items-baseline gap-2">
+                      <div key={idx} className="px-3 py-1.5 border border-gray-200 bg-white hover:border-[#111111] transition-colors flex items-baseline gap-2">
                         <span className="text-[10px] font-bold text-gray-800 tracking-wider uppercase">{item.lang}</span>
-                        <span className="text-[8px] font-medium text-gray-400 uppercase">{item.level}</span>
+                        <span className="text-[8px] font-medium text-[#2563EB] uppercase">{item.level}</span>
                       </div>
                     ))}
                   </div>

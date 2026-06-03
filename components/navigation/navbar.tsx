@@ -10,8 +10,6 @@ import { Menu, X } from 'lucide-react';
 const navItems = [
   { name: 'Home', path: '/' },
   { name: 'Projects', path: '/projects' },
-  { name: 'About', path: '/about' },
-  { name: 'Contact', path: '/contact' },
 ];
 
 export function Navbar() {
@@ -36,7 +34,7 @@ export function Navbar() {
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
         <Link href="/" className="text-xl font-medium tracking-tight relative z-50">
-          STUDIO<span className="text-accent">.</span>
+          JITESH STUDIO<span className="text-accent">.</span>
         </Link>
 
         {/* Desktop Nav */}
