@@ -44,5 +44,7 @@ export const fallbackProfile: Profile = {
     { lang: 'HINDI', level: 'Fluent' },
     { lang: 'ENGLISH', level: 'Professional' },
     { lang: 'TAMIL', level: 'Basic' }
-  ]
+  ],
+  flipbook_url: '',
+  portfolio_pdf_url: ''
 };

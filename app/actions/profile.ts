@@ -27,6 +27,7 @@ export async function updateProfile(profileData: Profile) {
       software_suite: profileData.software_suite,
       competitions: profileData.competitions,
       languages: profileData.languages,
+      flipbook_url: profileData.flipbook_url || '',
       updated_at: new Date().toISOString()
     };
 

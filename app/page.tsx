@@ -10,9 +10,10 @@ import { Project } from '@/types/project';
 import { Profile } from '@/types/profile';
 import { fallbackProfile } from '@/data/profile';
 
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Download, ExternalLink } from 'lucide-react';
 import { getOptimizedImageUrl } from '@/lib/utils';
 import Container from '@/components/ui/container';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [liveProjects, setLiveProjects] = React.useState<Project[]>(projects);
@@ -92,6 +93,39 @@ export default function Home() {
                     +91 90879 90009
                   </a>
                 </div>
+                <div>
+                  <h4 className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#2563EB] mb-2">Portfolio PDF</h4>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 rounded-none border-gray-200 hover:border-black text-[10px] tracking-wider px-3 font-semibold transition-all duration-300"
+                    asChild
+                  >
+                    <a href={profile.portfolio_pdf_url || "/portfolio.pdf"} download="portfolio.pdf" className="inline-flex items-center gap-1.5">
+                      <Download className="w-3 h-3 text-[#2563EB]" />
+                      Download
+                    </a>
+                  </Button>
+                </div>
+                <div>
+                  <h4 className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#2563EB] mb-2">Fliplook Link</h4>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 rounded-none border-gray-200 hover:border-black text-[10px] tracking-wider px-3 font-semibold transition-all duration-300"
+                    asChild
+                  >
+                    <a
+                      href="https://heyzine.com/flip-book/9b00c15dbc.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5"
+                    >
+                      <ExternalLink className="w-3 h-3 text-[#2563EB]" />
+                      Open Link
+                    </a>
+                  </Button>
+                </div>
               </motion.div>
             </div>
 
@@ -107,7 +141,7 @@ export default function Home() {
                 <div className="absolute inset-0 border border-gray-200 translate-x-3 translate-y-3 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-500" />
                 <div className="relative rounded-3xl  w-full h-full overflow-hidden border border-gray-900 bg-gray-50">
                   <img
-                    src="https://res.cloudinary.com/dt3ucgv75/image/upload/v1780478052/WhatsApp_Image_2026-06-01_at_6.30.29_PM_tik3zj.jpg"
+                    src="https://res.cloudinary.com/dt3ucgv75/image/upload/v1781725992/Dp_lvbnva.jpg"
                     alt="Jitesh SA DP"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />

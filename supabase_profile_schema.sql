@@ -14,6 +14,8 @@ create table if not exists profile (
   software_suite jsonb not null default '[]'::jsonb,
   competitions jsonb not null default '[]'::jsonb,
   languages jsonb not null default '[]'::jsonb,
+  portfolio_pdf_url text,
+  flipbook_url text,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
   constraint one_row check (id = 1) -- Ensure only one profile row exists
 );
@@ -34,7 +36,7 @@ grant all privileges on table profile to postgres;
 grant select on table profile to anon, authenticated;
 
 -- 5. Insert initial portfolio data to seed the database
-insert into profile (id, name, description, experience, academic_projects, software_suite, competitions, languages)
+insert into profile (id, name, description, experience, academic_projects, software_suite, competitions, languages, portfolio_pdf_url)
 values (
   1,
   'Jitesh SA',
@@ -43,6 +45,7 @@ values (
   '[{"desc": "Exploration of form, scale, and spatial fundamentals", "title": "Basic Design", "category": "Foundation"}, {"desc": "Bespoke housing design and layouts", "title": "Villa Design", "category": "Residential"}, {"desc": "Educational and child-centric spaces", "title": "Primary & Nursery School Design", "category": "Institutional"}, {"desc": "Contextual design and community housing", "title": "Rurals", "category": "Rural Studies"}, {"desc": "Healthcare and cultural interaction spaces", "title": "Eye Hospital & Cultural Centre", "category": "Commercial"}, {"desc": "High-density commercial planning", "title": "Mall Design", "category": "Retail"}, {"desc": "Large-span structures and public routing", "title": "Stadium Design", "category": "Recreation"}, {"desc": "Revitalization and community masterplanning", "title": "Porur Lake Urban Design", "category": "Urban Design"}]'::jsonb,
   '["AUTOCAD", "SKETCHUP", "REVIT", "RHINO", "ENSCAPE", "D5 RENDER", "PHOTOSHOP", "ILLUSTRATOR", "INDESIGN", "PROCREATE"]'::jsonb,
   '[{"title": "SRM Saram Project Expo 2026", "subtitle": "Exhibition entry"}, {"title": "68th GSEN", "subtitle": "NASA India association work"}, {"title": "Jaipur Rugs Design", "subtitle": "Product design category"}, {"title": "ETHOS - Stadium Design", "subtitle": "National level submission"}]'::jsonb,
-  '[{"lang": "TELUGU", "level": "Native"}, {"lang": "HINDI", "level": "Fluent"}, {"lang": "ENGLISH", "level": "Professional"}, {"lang": "TAMIL", "level": "Basic"}]'::jsonb
+  '[{"lang": "TELUGU", "level": "Native"}, {"lang": "HINDI", "level": "Fluent"}, {"lang": "ENGLISH", "level": "Professional"}, {"lang": "TAMIL", "level": "Basic"}]'::jsonb,
+  ''
 )
 on conflict (id) do nothing;

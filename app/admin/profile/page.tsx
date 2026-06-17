@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
 import { updateProfile } from '@/app/actions/profile';
 import { fallbackProfile } from '@/data/profile';
+import { PdfUploader } from '@/components/admin/PdfUploader';
 import { 
   Profile, 
   ExperienceItem, 
@@ -49,6 +50,9 @@ export default function AdminProfilePage() {
   const [softwareSuite, setSoftwareSuite] = React.useState<string[]>([]);
   const [competitions, setCompetitions] = React.useState<CompetitionItem[]>([]);
   const [languages, setLanguages] = React.useState<LanguageItem[]>([]);
+  const [portfolioPdfUrl, setPortfolioPdfUrl] = React.useState('');
+  const [flipbookUrl, setFlipbookUrl] = React.useState('');
+
 
   // New item inputs
   const [newExp, setNewExp] = React.useState<ExperienceItem>({ category: '', title: '', location: '', desc: '' });
@@ -76,6 +80,8 @@ export default function AdminProfilePage() {
           setSoftwareSuite(data.software_suite || []);
           setCompetitions(data.competitions || []);
           setLanguages(data.languages || []);
+          setPortfolioPdfUrl(data.portfolio_pdf_url || '');
+          setFlipbookUrl(data.flipbook_url || '');
         } else {
           // Initialize states with default fallback data
           setName(fallbackProfile.name);
@@ -85,6 +91,8 @@ export default function AdminProfilePage() {
           setSoftwareSuite(fallbackProfile.software_suite);
           setCompetitions(fallbackProfile.competitions);
           setLanguages(fallbackProfile.languages);
+          setPortfolioPdfUrl(fallbackProfile.portfolio_pdf_url || '');
+          setFlipbookUrl(fallbackProfile.flipbook_url || '');
         }
       } catch (err: any) {
         console.error('Error fetching profile:', err);
@@ -97,6 +105,8 @@ export default function AdminProfilePage() {
         setSoftwareSuite(fallbackProfile.software_suite);
         setCompetitions(fallbackProfile.competitions);
         setLanguages(fallbackProfile.languages);
+        setPortfolioPdfUrl(fallbackProfile.portfolio_pdf_url || '');
+        setFlipbookUrl(fallbackProfile.flipbook_url || '');
       } finally {
         setIsLoading(false);
       }
@@ -131,7 +141,9 @@ export default function AdminProfilePage() {
       academic_projects: academicProjects,
       software_suite: softwareSuite,
       competitions,
-      languages
+      languages,
+      portfolio_pdf_url: portfolioPdfUrl,
+      flipbook_url: flipbookUrl
     };
 
     try {
@@ -307,7 +319,7 @@ export default function AdminProfilePage() {
                   General Bio Settings
                 </h3>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-4 font-light">
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-widest text-gray-400 font-bold block">
                     Full Name *
@@ -332,6 +344,33 @@ export default function AdminProfilePage() {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Write a bio to display in the hero section..."
                     className="w-full border border-gray-200 px-4 py-3 text-sm focus:border-black focus:outline-none transition-all rounded-none bg-gray-50/50 font-light leading-relaxed"
+                  />
+                </div>
+
+                <div className="border-b border-gray-100 pb-3 pt-6">
+                  <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-[#2563EB]">
+                    Portfolio PDF Document
+                  </h3>
+                </div>
+                
+                <PdfUploader
+                  label="Upload PDF Portfolio"
+                  value={portfolioPdfUrl}
+                  onUploadSuccess={(url) => setPortfolioPdfUrl(url)}
+                  onRemove={() => setPortfolioPdfUrl('')}
+                />
+                
+                {/* Flipbook URL Input */}
+                <div className="mt-6">
+                  <label className="text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-1">
+                    Flipbook URL
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://your-flipbook-link.com"
+                    value={flipbookUrl}
+                    onChange={(e) => setFlipbookUrl(e.target.value)}
+                    className="w-full border border-gray-200 px-4 py-3 text-sm focus:border-black focus:outline-none transition-all rounded-none bg-gray-50/50 font-light"
                   />
                 </div>
               </div>

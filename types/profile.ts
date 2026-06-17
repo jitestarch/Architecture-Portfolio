@@ -30,4 +30,6 @@ export interface Profile {
   software_suite: string[];
   competitions: CompetitionItem[];
   languages: LanguageItem[];
+  flipbook_url?: string;
+  portfolio_pdf_url?: string;
 }
