@@ -101,7 +101,7 @@ export default function Home() {
                     className="h-8 rounded-none border-gray-200 hover:border-black text-[10px] tracking-wider px-3 font-semibold transition-all duration-300"
                     asChild
                   >
-                    <a href={profile.portfolio_pdf_url || "/portfolio.pdf"} download="portfolio.pdf" className="inline-flex items-center gap-1.5">
+                    <a href="/api/download-pdf" download="portfolio.pdf" className="inline-flex items-center gap-1.5">
                       <Download className="w-3 h-3 text-[#2563EB]" />
                       Download
                     </a>

@@ -75,9 +75,11 @@ export function PdfUploader({
       formData.append('timestamp', timestamp.toString());
       formData.append('signature', signature);
       formData.append('folder', 'portfolio-cv');
+      formData.append('resource_type', 'raw');
+      formData.append('format', 'pdf');
 
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`);
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/raw/upload`);
 
       // Track progress
       xhr.upload.addEventListener('progress', (e) => {
