@@ -65,7 +65,7 @@ export default function Home() {
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="space-y-4"
               >
-                <div className="md:hidden  bg-amber-200 flex items-start justify-center gap-4">
+                <div className="md:hidden   flex items-start justify-center gap-4">
                   <div className="flex-1 space-y-3 ">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100/50 rounded-full ml-auto">
                       <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
