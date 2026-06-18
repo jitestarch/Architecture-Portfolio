@@ -65,16 +65,43 @@ export default function Home() {
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="space-y-4"
               >
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100/50 rounded-full">
+                <div className="md:hidden  bg-amber-200 flex items-start justify-center gap-4">
+                  <div className="flex-1 space-y-3 ">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100/50 rounded-full ml-auto">
+                      <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                      <span className="text-[10px] uppercase tracking-widest text-accent font-bold">
+                        Architecture Student
+                      </span>
+                    </div>
+                    <h1 className="text-4xl font-extralight tracking-tighter text-foreground leading-tight">
+                      {profile.name}
+                    </h1>
+                  </div>
+
+                  <div className="shrink-0">
+                    <div className="relative group w-28 h-28">
+                      <div className="absolute inset-0 border border-gray-200 translate-x-2 translate-y-2" />
+                      <div className="relative rounded-2xl w-full h-full overflow-hidden border border-gray-900 bg-gray-50">
+                        <img
+                          src="https://res.cloudinary.com/dt3ucgv75/image/upload/v1781725992/Dp_lvbnva.jpg"
+                          alt="Jitesh SA DP"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="hidden md:inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100/50 rounded-full">
                   <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
                   <span className="text-[10px] uppercase tracking-widest text-accent font-bold">
                     Architecture Student
                   </span>
                 </div>
-                <h1 className="text-5xl md:text-7xl font-extralight tracking-tighter text-foreground leading-tight">
+                <h1 className="hidden md:block text-5xl md:text-7xl font-extralight tracking-tighter text-foreground leading-tight">
                   {profile.name}
                 </h1>
-                <p className="text-sm md:text-base text-gray-600 font-light max-w-xl leading-relaxed whitespace-pre-wrap">
+                <p className="text-sm md:text-base text-gray-600 font-light max-w-full md:max-w-xl leading-relaxed whitespace-pre-wrap text-right md:text-left">
                   {profile.description}
                 </p>
               </motion.div>{" "}
@@ -122,7 +149,6 @@ export default function Home() {
                   >
                     <a
                       href="https://drive.google.com/file/d/1noGsdkuszx7I5gfOgrWRYQGdtJqQ6Rgb/view?usp=drivesdk"
-                     
                       className="inline-flex items-center gap-1.5"
                     >
                       <Download className="w-3 h-3 text-accent" />
@@ -132,7 +158,28 @@ export default function Home() {
                 </div>
                 <div>
                   <h4 className="text-[10px] uppercase font-bold tracking-[0.2em] text-accent mb-2">
-                    Fliplook Link
+                    Flipbook Link
+                  </h4>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 rounded-none border-gray-200 hover:border-black text-[10px] tracking-wider px-3 font-semibold transition-all duration-300"
+                    asChild
+                  >
+                    <a
+                      href="https://heyzine.com/flip-book/9b00c15dbc.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5"
+                    >
+                      <ExternalLink className="w-3 h-3 text-accent" />
+                      Open Link
+                    </a>
+                  </Button>
+                </div>
+                <div>
+                  <h4 className="text-[10px] uppercase font-bold tracking-[0.2em] text-accent mb-2">
+                    Resume Link
                   </h4>
                   <Button
                     variant="outline"
@@ -155,7 +202,7 @@ export default function Home() {
             </div>
 
             {/* Right DP Column */}
-            <div className="shrink-0">
+            <div className="hidden md:block shrink-0">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
