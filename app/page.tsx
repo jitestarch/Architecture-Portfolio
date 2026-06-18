@@ -101,7 +101,7 @@ export default function Home() {
                 <h1 className="hidden md:block text-5xl md:text-7xl font-extralight tracking-tighter text-foreground leading-tight">
                   {profile.name}
                 </h1>
-                <p className="text-sm md:text-base text-gray-600 font-light max-w-full md:max-w-xl leading-relaxed whitespace-pre-wrap text-right md:text-left">
+                <p className="text-sm md:text-base text-gray-600 font-light max-w-full md:max-w-xl leading-relaxed whitespace-pre-wrap ">
                   {profile.description}
                 </p>
               </motion.div>{" "}
