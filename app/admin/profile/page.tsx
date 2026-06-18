@@ -1,65 +1,87 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { 
-  ArrowLeft, 
-  Save, 
-  Plus, 
-  Trash2, 
-  User, 
-  Briefcase, 
-  GraduationCap, 
-  Cpu, 
-  Trophy, 
-  Languages, 
-  CheckCircle2, 
-  AlertCircle 
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { supabase } from '@/lib/supabase';
-import { updateProfile } from '@/app/actions/profile';
-import { fallbackProfile } from '@/data/profile';
-import { PdfUploader } from '@/components/admin/PdfUploader';
-import { 
-  Profile, 
-  ExperienceItem, 
-  AcademicProjectItem, 
-  CompetitionItem, 
-  LanguageItem 
-} from '@/types/profile';
+import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  ArrowLeft,
+  Save,
+  Plus,
+  Trash2,
+  User,
+  Briefcase,
+  GraduationCap,
+  Cpu,
+  Trophy,
+  Languages,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabase";
+import { updateProfile } from "@/app/actions/profile";
+import { fallbackProfile } from "@/data/profile";
+import {
+  Profile,
+  ExperienceItem,
+  AcademicProjectItem,
+  CompetitionItem,
+  LanguageItem,
+} from "@/types/profile";
 
-type TabType = 'profile' | 'experience' | 'academic' | 'software' | 'competitions';
+type TabType =
+  | "profile"
+  | "experience"
+  | "academic"
+  | "software"
+  | "competitions";
 
 export default function AdminProfilePage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = React.useState<TabType>('profile');
-  
+  const [activeTab, setActiveTab] = React.useState<TabType>("profile");
+
   // Loading and feedback states
   const [isLoading, setIsLoading] = React.useState(true);
   const [isSaving, setIsSaving] = React.useState(false);
-  const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = React.useState<string | null>(
+    null,
+  );
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   // Profile fields state
-  const [name, setName] = React.useState('');
-  const [description, setDescription] = React.useState('');
+  const [name, setName] = React.useState("");
+  const [description, setDescription] = React.useState("");
   const [experience, setExperience] = React.useState<ExperienceItem[]>([]);
-  const [academicProjects, setAcademicProjects] = React.useState<AcademicProjectItem[]>([]);
+  const [academicProjects, setAcademicProjects] = React.useState<
+    AcademicProjectItem[]
+  >([]);
   const [softwareSuite, setSoftwareSuite] = React.useState<string[]>([]);
   const [competitions, setCompetitions] = React.useState<CompetitionItem[]>([]);
   const [languages, setLanguages] = React.useState<LanguageItem[]>([]);
-  const [portfolioPdfUrl, setPortfolioPdfUrl] = React.useState('');
-  const [flipbookUrl, setFlipbookUrl] = React.useState('');
-
+  const [portfolioPdfUrl, setPortfolioPdfUrl] = React.useState("");
+  const [flipbookUrl, setFlipbookUrl] = React.useState("");
 
   // New item inputs
-  const [newExp, setNewExp] = React.useState<ExperienceItem>({ category: '', title: '', location: '', desc: '' });
-  const [newAcad, setNewAcad] = React.useState<AcademicProjectItem>({ category: '', title: '', desc: '' });
-  const [newSoftware, setNewSoftware] = React.useState('');
-  const [newComp, setNewComp] = React.useState<CompetitionItem>({ title: '', subtitle: '' });
-  const [newLang, setNewLang] = React.useState<LanguageItem>({ lang: '', level: '' });
+  const [newExp, setNewExp] = React.useState<ExperienceItem>({
+    category: "",
+    title: "",
+    location: "",
+    desc: "",
+  });
+  const [newAcad, setNewAcad] = React.useState<AcademicProjectItem>({
+    category: "",
+    title: "",
+    desc: "",
+  });
+  const [newSoftware, setNewSoftware] = React.useState("");
+  const [newComp, setNewComp] = React.useState<CompetitionItem>({
+    title: "",
+    subtitle: "",
+  });
+  const [newLang, setNewLang] = React.useState<LanguageItem>({
+    lang: "",
+    level: "",
+  });
 
   // Fetch current data on load
   React.useEffect(() => {
@@ -67,21 +89,21 @@ export default function AdminProfilePage() {
       try {
         setIsLoading(true);
         const { data, error } = await supabase
-          .from('profile')
-          .select('*')
-          .eq('id', 1)
+          .from("profile")
+          .select("*")
+          .eq("id", 1)
           .maybeSingle();
 
         if (data) {
-          setName(data.name || '');
-          setDescription(data.description || '');
+          setName(data.name || "");
+          setDescription(data.description || "");
           setExperience(data.experience || []);
           setAcademicProjects(data.academic_projects || []);
           setSoftwareSuite(data.software_suite || []);
           setCompetitions(data.competitions || []);
           setLanguages(data.languages || []);
-          setPortfolioPdfUrl(data.portfolio_pdf_url || '');
-          setFlipbookUrl(data.flipbook_url || '');
+          setPortfolioPdfUrl(data.portfolio_pdf_url || "");
+          setFlipbookUrl(data.flipbook_url || "");
         } else {
           // Initialize states with default fallback data
           setName(fallbackProfile.name);
@@ -91,12 +113,14 @@ export default function AdminProfilePage() {
           setSoftwareSuite(fallbackProfile.software_suite);
           setCompetitions(fallbackProfile.competitions);
           setLanguages(fallbackProfile.languages);
-          setPortfolioPdfUrl(fallbackProfile.portfolio_pdf_url || '');
-          setFlipbookUrl(fallbackProfile.flipbook_url || '');
+          setPortfolioPdfUrl(fallbackProfile.portfolio_pdf_url || "");
+          setFlipbookUrl(fallbackProfile.flipbook_url || "");
         }
       } catch (err: any) {
-        console.error('Error fetching profile:', err);
-        setErrorMessage('Failed to load profile from database. Loaded fallback data.');
+        console.error("Error fetching profile:", err);
+        setErrorMessage(
+          "Failed to load profile from database. Loaded fallback data.",
+        );
         // Still load fallbacks so user has editable form
         setName(fallbackProfile.name);
         setDescription(fallbackProfile.description);
@@ -105,8 +129,8 @@ export default function AdminProfilePage() {
         setSoftwareSuite(fallbackProfile.software_suite);
         setCompetitions(fallbackProfile.competitions);
         setLanguages(fallbackProfile.languages);
-        setPortfolioPdfUrl(fallbackProfile.portfolio_pdf_url || '');
-        setFlipbookUrl(fallbackProfile.flipbook_url || '');
+        setPortfolioPdfUrl(fallbackProfile.portfolio_pdf_url || "");
+        setFlipbookUrl(fallbackProfile.flipbook_url || "");
       } finally {
         setIsLoading(false);
       }
@@ -123,13 +147,13 @@ export default function AdminProfilePage() {
     setSuccessMessage(null);
 
     if (!name.trim()) {
-      setErrorMessage('Name cannot be empty.');
+      setErrorMessage("Name cannot be empty.");
       setIsSaving(false);
       return;
     }
 
     if (!description.trim()) {
-      setErrorMessage('Description cannot be empty.');
+      setErrorMessage("Description cannot be empty.");
       setIsSaving(false);
       return;
     }
@@ -143,26 +167,28 @@ export default function AdminProfilePage() {
       competitions,
       languages,
       portfolio_pdf_url: portfolioPdfUrl,
-      flipbook_url: flipbookUrl
+      flipbook_url: flipbookUrl,
     };
 
     try {
       const res = await updateProfile(payload);
       if (res.success) {
-        setSuccessMessage('Profile and CV updated successfully!');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setSuccessMessage("Profile and CV updated successfully!");
+        window.scrollTo({ top: 0, behavior: "smooth" });
         setTimeout(() => {
-          router.push('/admin');
+          router.push("/admin");
           router.refresh();
         }, 1500);
       } else {
-        setErrorMessage(res.error || 'Failed to save changes.');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setErrorMessage(res.error || "Failed to save changes.");
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } catch (err: any) {
-      console.error('Error updating profile:', err);
-      setErrorMessage(err.message || 'An error occurred while saving the profile settings.');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      console.error("Error updating profile:", err);
+      setErrorMessage(
+        err.message || "An error occurred while saving the profile settings.",
+      );
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setIsSaving(false);
     }
@@ -171,28 +197,28 @@ export default function AdminProfilePage() {
   // Add & Remove Helpers
   const addExperience = () => {
     if (!newExp.category || !newExp.title) {
-      alert('Please fill out Category and Title for the experience item.');
+      alert("Please fill out Category and Title for the experience item.");
       return;
     }
-    setExperience(prev => [...prev, newExp]);
-    setNewExp({ category: '', title: '', location: '', desc: '' });
+    setExperience((prev) => [...prev, newExp]);
+    setNewExp({ category: "", title: "", location: "", desc: "" });
   };
 
   const removeExperience = (index: number) => {
-    setExperience(prev => prev.filter((_, i) => i !== index));
+    setExperience((prev) => prev.filter((_, i) => i !== index));
   };
 
   const addAcademicProject = () => {
     if (!newAcad.category || !newAcad.title) {
-      alert('Please fill out Category and Title for the academic project.');
+      alert("Please fill out Category and Title for the academic project.");
       return;
     }
-    setAcademicProjects(prev => [...prev, newAcad]);
-    setNewAcad({ category: '', title: '', desc: '' });
+    setAcademicProjects((prev) => [...prev, newAcad]);
+    setNewAcad({ category: "", title: "", desc: "" });
   };
 
   const removeAcademicProject = (index: number) => {
-    setAcademicProjects(prev => prev.filter((_, i) => i !== index));
+    setAcademicProjects((prev) => prev.filter((_, i) => i !== index));
   };
 
   const addSoftware = (e: React.FormEvent) => {
@@ -200,41 +226,41 @@ export default function AdminProfilePage() {
     const cleanSoftware = newSoftware.trim().toUpperCase();
     if (!cleanSoftware) return;
     if (softwareSuite.includes(cleanSoftware)) {
-      alert('Tool already exists in software suite.');
+      alert("Tool already exists in software suite.");
       return;
     }
-    setSoftwareSuite(prev => [...prev, cleanSoftware]);
-    setNewSoftware('');
+    setSoftwareSuite((prev) => [...prev, cleanSoftware]);
+    setNewSoftware("");
   };
 
   const removeSoftware = (tool: string) => {
-    setSoftwareSuite(prev => prev.filter(t => t !== tool));
+    setSoftwareSuite((prev) => prev.filter((t) => t !== tool));
   };
 
   const addCompetition = () => {
     if (!newComp.title) {
-      alert('Please fill out the Title for the competition.');
+      alert("Please fill out the Title for the competition.");
       return;
     }
-    setCompetitions(prev => [...prev, newComp]);
-    setNewComp({ title: '', subtitle: '' });
+    setCompetitions((prev) => [...prev, newComp]);
+    setNewComp({ title: "", subtitle: "" });
   };
 
   const removeCompetition = (index: number) => {
-    setCompetitions(prev => prev.filter((_, i) => i !== index));
+    setCompetitions((prev) => prev.filter((_, i) => i !== index));
   };
 
   const addLanguage = () => {
     if (!newLang.lang || !newLang.level) {
-      alert('Please fill out both Language name and proficiency Level.');
+      alert("Please fill out both Language name and proficiency Level.");
       return;
     }
-    setLanguages(prev => [...prev, newLang]);
-    setNewLang({ lang: '', level: '' });
+    setLanguages((prev) => [...prev, newLang]);
+    setNewLang({ lang: "", level: "" });
   };
 
   const removeLanguage = (index: number) => {
-    setLanguages(prev => prev.filter((_, i) => i !== index));
+    setLanguages((prev) => prev.filter((_, i) => i !== index));
   };
 
   if (isLoading) {
@@ -242,7 +268,9 @@ export default function AdminProfilePage() {
       <div className="min-h-screen bg-white flex items-center justify-center pt-32 pb-24">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-xs uppercase tracking-widest text-gray-400 font-bold">Loading Profile Settings...</p>
+          <p className="text-xs uppercase tracking-widest text-gray-400 font-bold">
+            Loading Profile Settings...
+          </p>
         </div>
       </div>
     );
@@ -251,7 +279,6 @@ export default function AdminProfilePage() {
   return (
     <div className="min-h-screen bg-white pt-32 pb-24">
       <div className="container mx-auto px-6 md:px-12 max-w-4xl">
-        
         {/* Navigation & Header */}
         <div className="flex items-center justify-between border-b border-gray-100 pb-6 mb-10">
           <div>
@@ -261,7 +288,9 @@ export default function AdminProfilePage() {
             >
               <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Back to Dashboard
             </Link>
-            <h1 className="text-3xl font-light tracking-tighter text-[#111111]">Edit Profile & CV Details</h1>
+            <h1 className="text-3xl font-light tracking-tighter text-[#111111]">
+              Edit Profile & CV Details
+            </h1>
           </div>
         </div>
 
@@ -283,11 +312,11 @@ export default function AdminProfilePage() {
         {/* Tab Navigation */}
         <div className="flex border-b border-gray-200 mb-8 overflow-x-auto scrollbar-none whitespace-nowrap gap-1">
           {[
-            { id: 'profile', label: 'Profile & Bio', icon: User },
-            { id: 'experience', label: 'Experience', icon: Briefcase },
-            { id: 'academic', label: 'Academic Projects', icon: GraduationCap },
-            { id: 'software', label: 'Software Suite', icon: Cpu },
-            { id: 'competitions', label: 'Competitions & Langs', icon: Trophy }
+            { id: "profile", label: "Profile & Bio", icon: User },
+            { id: "experience", label: "Experience", icon: Briefcase },
+            { id: "academic", label: "Academic Projects", icon: GraduationCap },
+            { id: "software", label: "Software Suite", icon: Cpu },
+            { id: "competitions", label: "Competitions & Langs", icon: Trophy },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -297,12 +326,14 @@ export default function AdminProfilePage() {
                 type="button"
                 onClick={() => setActiveTab(tab.id as TabType)}
                 className={`flex items-center gap-2 px-5 py-4 border-b-2 text-xs font-bold uppercase tracking-widest transition-all ${
-                  isActive 
-                    ? 'border-black text-black bg-gray-50/50' 
-                    : 'border-transparent text-gray-400 hover:text-black hover:border-gray-200'
+                  isActive
+                    ? "border-black text-black bg-gray-50/50"
+                    : "border-transparent text-gray-400 hover:text-black hover:border-gray-200"
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#2563EB]' : ''}`} />
+                <Icon
+                  className={`w-3.5 h-3.5 ${isActive ? "text-[#2563EB]" : ""}`}
+                />
                 {tab.label}
               </button>
             );
@@ -310,9 +341,8 @@ export default function AdminProfilePage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-10">
-          
           {/* TAB 1: PROFILE & BIO */}
-          {activeTab === 'profile' && (
+          {activeTab === "profile" && (
             <div className="space-y-6 animate-fadeIn">
               <div className="border-b border-gray-100 pb-3">
                 <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-[#2563EB]">
@@ -347,19 +377,6 @@ export default function AdminProfilePage() {
                   />
                 </div>
 
-                <div className="border-b border-gray-100 pb-3 pt-6">
-                  <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-[#2563EB]">
-                    Portfolio PDF Document
-                  </h3>
-                </div>
-                
-                <PdfUploader
-                  label="Upload PDF Portfolio"
-                  value={portfolioPdfUrl}
-                  onUploadSuccess={(url) => setPortfolioPdfUrl(url)}
-                  onRemove={() => setPortfolioPdfUrl('')}
-                />
-                
                 {/* Flipbook URL Input */}
                 <div className="mt-6">
                   <label className="text-[10px] uppercase tracking-widest text-gray-400 font-bold block mb-1">
@@ -378,7 +395,7 @@ export default function AdminProfilePage() {
           )}
 
           {/* TAB 2: EXPERIENCE */}
-          {activeTab === 'experience' && (
+          {activeTab === "experience" && (
             <div className="space-y-8 animate-fadeIn">
               <div className="border-b border-gray-100 pb-3">
                 <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-[#2563EB]">
@@ -391,7 +408,7 @@ export default function AdminProfilePage() {
                 <h4 className="text-[10px] uppercase tracking-widest font-extrabold text-gray-900">
                   Add Experience Entry
                 </h4>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-[9px] uppercase tracking-widest text-gray-400 font-bold block">
@@ -401,7 +418,9 @@ export default function AdminProfilePage() {
                       type="text"
                       placeholder="e.g. Externship"
                       value={newExp.category}
-                      onChange={(e) => setNewExp({...newExp, category: e.target.value})}
+                      onChange={(e) =>
+                        setNewExp({ ...newExp, category: e.target.value })
+                      }
                       className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none"
                     />
                   </div>
@@ -413,7 +432,9 @@ export default function AdminProfilePage() {
                       type="text"
                       placeholder="e.g. Starchitect"
                       value={newExp.title}
-                      onChange={(e) => setNewExp({...newExp, title: e.target.value})}
+                      onChange={(e) =>
+                        setNewExp({ ...newExp, title: e.target.value })
+                      }
                       className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none"
                     />
                   </div>
@@ -425,7 +446,9 @@ export default function AdminProfilePage() {
                       type="text"
                       placeholder="e.g. Kaladipet, Chennai"
                       value={newExp.location}
-                      onChange={(e) => setNewExp({...newExp, location: e.target.value})}
+                      onChange={(e) =>
+                        setNewExp({ ...newExp, location: e.target.value })
+                      }
                       className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none"
                     />
                   </div>
@@ -437,7 +460,9 @@ export default function AdminProfilePage() {
                       rows={3}
                       placeholder="Hands-on practice in design development..."
                       value={newExp.desc}
-                      onChange={(e) => setNewExp({...newExp, desc: e.target.value})}
+                      onChange={(e) =>
+                        setNewExp({ ...newExp, desc: e.target.value })
+                      }
                       className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none"
                     />
                   </div>
@@ -467,12 +492,27 @@ export default function AdminProfilePage() {
                 ) : (
                   <div className="divide-y divide-gray-100 border border-gray-100 bg-white">
                     {experience.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-start p-5 hover:bg-gray-50/50 gap-4 transition-colors">
+                      <div
+                        key={idx}
+                        className="flex justify-between items-start p-5 hover:bg-gray-50/50 gap-4 transition-colors"
+                      >
                         <div className="space-y-1 pl-3 border-l-2 border-[#2563EB]">
-                          <span className="text-[8px] uppercase tracking-widest text-[#2563EB] font-bold block">{item.category}</span>
-                          <h5 className="text-sm font-semibold text-gray-900 uppercase">{item.title}</h5>
-                          {item.location && <p className="text-xs text-gray-500 font-medium">{item.location}</p>}
-                          {item.desc && <p className="text-xs text-gray-400 font-light mt-1 max-w-xl">{item.desc}</p>}
+                          <span className="text-[8px] uppercase tracking-widest text-[#2563EB] font-bold block">
+                            {item.category}
+                          </span>
+                          <h5 className="text-sm font-semibold text-gray-900 uppercase">
+                            {item.title}
+                          </h5>
+                          {item.location && (
+                            <p className="text-xs text-gray-500 font-medium">
+                              {item.location}
+                            </p>
+                          )}
+                          {item.desc && (
+                            <p className="text-xs text-gray-400 font-light mt-1 max-w-xl">
+                              {item.desc}
+                            </p>
+                          )}
                         </div>
                         <button
                           type="button"
@@ -491,7 +531,7 @@ export default function AdminProfilePage() {
           )}
 
           {/* TAB 3: ACADEMIC PROJECTS */}
-          {activeTab === 'academic' && (
+          {activeTab === "academic" && (
             <div className="space-y-8 animate-fadeIn">
               <div className="border-b border-gray-100 pb-3">
                 <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-[#2563EB]">
@@ -514,7 +554,9 @@ export default function AdminProfilePage() {
                       type="text"
                       placeholder="e.g. Residential"
                       value={newAcad.category}
-                      onChange={(e) => setNewAcad({...newAcad, category: e.target.value})}
+                      onChange={(e) =>
+                        setNewAcad({ ...newAcad, category: e.target.value })
+                      }
                       className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none"
                     />
                   </div>
@@ -526,7 +568,9 @@ export default function AdminProfilePage() {
                       type="text"
                       placeholder="e.g. Villa Design"
                       value={newAcad.title}
-                      onChange={(e) => setNewAcad({...newAcad, title: e.target.value})}
+                      onChange={(e) =>
+                        setNewAcad({ ...newAcad, title: e.target.value })
+                      }
                       className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none"
                     />
                   </div>
@@ -538,7 +582,9 @@ export default function AdminProfilePage() {
                       rows={2}
                       placeholder="Bespoke housing design and layouts..."
                       value={newAcad.desc}
-                      onChange={(e) => setNewAcad({...newAcad, desc: e.target.value})}
+                      onChange={(e) =>
+                        setNewAcad({ ...newAcad, desc: e.target.value })
+                      }
                       className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none"
                     />
                   </div>
@@ -568,11 +614,22 @@ export default function AdminProfilePage() {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {academicProjects.map((item, idx) => (
-                      <div key={idx} className="border border-gray-250 p-4 hover:border-black transition-all duration-300 flex justify-between gap-2 bg-white">
+                      <div
+                        key={idx}
+                        className="border border-gray-250 p-4 hover:border-black transition-all duration-300 flex justify-between gap-2 bg-white"
+                      >
                         <div className="space-y-1">
-                          <span className="text-[8px] uppercase tracking-widest text-[#2563EB] font-bold block">{item.category}</span>
-                          <p className="text-xs font-semibold text-gray-800 uppercase">{item.title}</p>
-                          {item.desc && <p className="text-[10px] text-gray-400 font-light mt-1 line-clamp-3 leading-snug">{item.desc}</p>}
+                          <span className="text-[8px] uppercase tracking-widest text-[#2563EB] font-bold block">
+                            {item.category}
+                          </span>
+                          <p className="text-xs font-semibold text-gray-800 uppercase">
+                            {item.title}
+                          </p>
+                          {item.desc && (
+                            <p className="text-[10px] text-gray-400 font-light mt-1 line-clamp-3 leading-snug">
+                              {item.desc}
+                            </p>
+                          )}
                         </div>
                         <button
                           type="button"
@@ -591,7 +648,7 @@ export default function AdminProfilePage() {
           )}
 
           {/* TAB 4: SOFTWARE SUITE */}
-          {activeTab === 'software' && (
+          {activeTab === "software" && (
             <div className="space-y-8 animate-fadeIn">
               <div className="border-b border-gray-100 pb-3">
                 <h3 className="text-xs uppercase tracking-[0.2em] font-extrabold text-[#2563EB]">
@@ -630,7 +687,9 @@ export default function AdminProfilePage() {
                   <h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-400">
                     Software Suite Tools ({softwareSuite.length})
                   </h4>
-                  <span className="text-[9px] text-gray-400 italic">Click on any tool tag to remove it</span>
+                  <span className="text-[9px] text-gray-400 italic">
+                    Click on any tool tag to remove it
+                  </span>
                 </div>
 
                 {softwareSuite.length === 0 ? (
@@ -647,7 +706,9 @@ export default function AdminProfilePage() {
                         className="group border border-gray-200 px-4 py-3 bg-gray-50/30 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all flex items-center gap-2 duration-200"
                         title={`Remove ${tool}`}
                       >
-                        <span className="text-xs font-semibold text-gray-800 tracking-tight group-hover:text-red-600 uppercase">{tool}</span>
+                        <span className="text-xs font-semibold text-gray-800 tracking-tight group-hover:text-red-600 uppercase">
+                          {tool}
+                        </span>
                         <Trash2 className="w-3 h-3 text-gray-300 group-hover:text-red-500 transition-colors" />
                       </button>
                     ))}
@@ -658,9 +719,8 @@ export default function AdminProfilePage() {
           )}
 
           {/* TAB 5: COMPETITIONS & LANGUAGES */}
-          {activeTab === 'competitions' && (
+          {activeTab === "competitions" && (
             <div className="space-y-12 animate-fadeIn">
-              
               {/* Part A: Competitions */}
               <div className="space-y-8">
                 <div className="border-b border-gray-100 pb-3">
@@ -683,7 +743,9 @@ export default function AdminProfilePage() {
                         type="text"
                         placeholder="e.g. SRM Saram Project Expo 2026"
                         value={newComp.title}
-                        onChange={(e) => setNewComp({...newComp, title: e.target.value})}
+                        onChange={(e) =>
+                          setNewComp({ ...newComp, title: e.target.value })
+                        }
                         className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none"
                       />
                     </div>
@@ -695,7 +757,9 @@ export default function AdminProfilePage() {
                         type="text"
                         placeholder="e.g. Exhibition entry"
                         value={newComp.subtitle}
-                        onChange={(e) => setNewComp({...newComp, subtitle: e.target.value})}
+                        onChange={(e) =>
+                          setNewComp({ ...newComp, subtitle: e.target.value })
+                        }
                         className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none"
                       />
                     </div>
@@ -724,10 +788,19 @@ export default function AdminProfilePage() {
                   ) : (
                     <div className="border border-gray-100 divide-y divide-gray-100 bg-white">
                       {competitions.map((comp, idx) => (
-                        <div key={idx} className="flex justify-between items-center p-4 hover:bg-gray-50/50 gap-4 transition-colors">
+                        <div
+                          key={idx}
+                          className="flex justify-between items-center p-4 hover:bg-gray-50/50 gap-4 transition-colors"
+                        >
                           <div className="pl-3 border-l border-gray-200">
-                            <p className="text-sm font-semibold text-gray-800 uppercase">{comp.title}</p>
-                            {comp.subtitle && <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{comp.subtitle}</p>}
+                            <p className="text-sm font-semibold text-gray-800 uppercase">
+                              {comp.title}
+                            </p>
+                            {comp.subtitle && (
+                              <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">
+                                {comp.subtitle}
+                              </p>
+                            )}
                           </div>
                           <button
                             type="button"
@@ -766,7 +839,12 @@ export default function AdminProfilePage() {
                         type="text"
                         placeholder="e.g. ENGLISH, TELUGU"
                         value={newLang.lang}
-                        onChange={(e) => setNewLang({...newLang, lang: e.target.value.toUpperCase()})}
+                        onChange={(e) =>
+                          setNewLang({
+                            ...newLang,
+                            lang: e.target.value.toUpperCase(),
+                          })
+                        }
                         className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none uppercase"
                       />
                     </div>
@@ -778,7 +856,9 @@ export default function AdminProfilePage() {
                         type="text"
                         placeholder="e.g. Native"
                         value={newLang.level}
-                        onChange={(e) => setNewLang({...newLang, level: e.target.value})}
+                        onChange={(e) =>
+                          setNewLang({ ...newLang, level: e.target.value })
+                        }
                         className="w-full border border-gray-200 px-3 py-2 text-xs focus:border-black focus:outline-none bg-white rounded-none"
                       />
                     </div>
@@ -807,9 +887,16 @@ export default function AdminProfilePage() {
                   ) : (
                     <div className="flex flex-wrap gap-2.5">
                       {languages.map((item, idx) => (
-                        <div key={idx} className="px-3.5 py-2 border border-gray-200 bg-white hover:border-[#111111] transition-colors flex items-center gap-3">
-                          <span className="text-[10px] font-bold text-gray-800 tracking-wider uppercase">{item.lang}</span>
-                          <span className="text-[8px] font-medium text-[#2563EB] uppercase">{item.level}</span>
+                        <div
+                          key={idx}
+                          className="px-3.5 py-2 border border-gray-200 bg-white hover:border-[#111111] transition-colors flex items-center gap-3"
+                        >
+                          <span className="text-[10px] font-bold text-gray-800 tracking-wider uppercase">
+                            {item.lang}
+                          </span>
+                          <span className="text-[8px] font-medium text-[#2563EB] uppercase">
+                            {item.level}
+                          </span>
                           <button
                             type="button"
                             onClick={() => removeLanguage(idx)}
@@ -824,7 +911,6 @@ export default function AdminProfilePage() {
                   )}
                 </div>
               </div>
-
             </div>
           )}
 
@@ -839,18 +925,17 @@ export default function AdminProfilePage() {
             >
               <Link href="/admin">Cancel</Link>
             </Button>
-            
+
             <Button
               type="submit"
               disabled={isSaving}
               className="bg-[#111111] text-white hover:bg-[#2563EB] rounded-none px-8 text-[10px] uppercase tracking-widest font-bold shadow-md disabled:opacity-50 flex items-center gap-2 py-5"
             >
-              {isSaving ? 'Saving Profile...' : 'Save & Revalidate Profile'} <Save className="w-4 h-4" />
+              {isSaving ? "Saving Profile..." : "Save & Revalidate Profile"}{" "}
+              <Save className="w-4 h-4" />
             </Button>
           </div>
-
         </form>
-
       </div>
     </div>
   );
