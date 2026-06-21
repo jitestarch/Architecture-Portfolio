@@ -188,7 +188,7 @@ export default function Home() {
                     asChild
                   >
                     <a
-                      href="https://heyzine.com/flip-book/9b00c15dbc.html"
+                      href="https://drive.google.com/file/d/1QPIEnkbPcLUBIxkfNgL2AfehA1dCJdHq/view?usp=drivesdk"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5"
